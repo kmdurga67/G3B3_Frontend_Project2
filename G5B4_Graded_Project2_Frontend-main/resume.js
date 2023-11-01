@@ -19,9 +19,9 @@ const prevButton = document.getElementById("prev-button");
 const nextButton = document.getElementById("next-button");
 const searchInput = document.getElementById("job-search");
 const errorMessage = document.getElementById("error-message");
-const err = document.getElementById("error")
+const err = document.getElementById("error");
 function displayApplicant() {
-  err.classList.add("visible")
+  err.classList.add("visible");
   const applicant = filteredApplicants[currentApplicantIndex];
   resumeContent.innerHTML = "";
 
@@ -101,14 +101,15 @@ function displayApplicant() {
     rightColumn.className = "right-column";
 
     const workExpHeading = document.createElement("h3");
-    workExpHeading.textContent = "Work Experience";
+    workExpHeading.textContent = "Work Experience in previous company";
     rightColumn.appendChild(workExpHeading);
 
     const workExpItem = document.createElement("p");
-    workExpItem.innerHTML = `<strong>${applicant.work["Company Name"]} - ${applicant.work.Position}</strong><br>
-                              Start Date: ${applicant.work["Start Date"]}<br>
-                              End Date: ${applicant.work["End Date"]}<br>
-                              Summary: ${applicant.work.Summary}`;
+    workExpItem.innerHTML = `<strong>Company Name: </strong>${applicant.work["Company Name"]}<br><br>
+                              <strong>Position:</strong> ${applicant.work.Position}<br><br>
+                             <strong> Start Date: </strong> ${applicant.work["Start Date"]}<br><br>
+                             <strong> End Date: </strong> ${applicant.work["End Date"]}<br><br>
+                              <strong>Summary: </strong> ${applicant.work.Summary}`;
     rightColumn.appendChild(workExpItem);
 
     const projectsHeading = document.createElement("h3");
@@ -116,7 +117,7 @@ function displayApplicant() {
     rightColumn.appendChild(projectsHeading);
 
     const projectItem = document.createElement("p");
-    projectItem.innerHTML = `<strong>${applicant.projects.name}</strong><br>${applicant.projects.description}`;
+    projectItem.innerHTML = `<strong>${applicant.projects.name}: </strong>${applicant.projects.description}`;
     rightColumn.appendChild(projectItem);
 
     const educationHeading = document.createElement("h3");
@@ -124,17 +125,28 @@ function displayApplicant() {
     rightColumn.appendChild(educationHeading);
 
     const ugItem = document.createElement("p");
-    ugItem.innerHTML = `<strong>${applicant.education.UG.institute}</strong><br>
-                          Course: ${applicant.education.UG.course}<br>
-                          Start Date: ${applicant.education.UG["Start Date"]}<br>
-                          End Date: ${applicant.education.UG["End Date"]}<br>
-                          CGPA: ${applicant.education.UG.cgpa}`;
+    ugItem.innerHTML = `<strong>&#8226; UG: </strong>${applicant.education.UG.institute}, ${applicant.education.UG.course}, ${applicant.education.UG["Start Date"]}, ${applicant.education.UG["End Date"]}, ${applicant.education.UG.cgpa}`;
     rightColumn.appendChild(ugItem);
 
     const seniorSecondaryItem = document.createElement("p");
-    seniorSecondaryItem.innerHTML = `<strong>${applicant.education["Senior Secondary"].institute}</strong><br>
-                                      CGPA: ${applicant.education["Senior Secondary"].cgpa}`;
+    seniorSecondaryItem.innerHTML = `<strong>&#8226; PU: </strong>${applicant.education["Senior Secondary"].institute}, ${applicant.education["Senior Secondary"].cgpa}`;
     rightColumn.appendChild(seniorSecondaryItem);
+
+    const highSchool = document.createElement("p");
+    highSchool.innerHTML = `<strong>&#8226; High School: </strong>${applicant.education["High School"].institute}, ${applicant.education["High School"].cgpa}`;
+    rightColumn.appendChild(highSchool);
+
+    const internshipHeading = document.createElement("h3");
+    internshipHeading.textContent = "Internship";
+    rightColumn.appendChild(internshipHeading);
+
+    const internshipList = document.createElement("ul");
+    internshipList.innerHTML = `<p><strong>&#8226; Company Name: </strong>${applicant.Internship["Company Name"]}</p>
+                              <p><strong>&#8226; Position:</strong> ${applicant.Internship.Position}</p>
+                             <p><strong>&#8226; Start Date: </strong> ${applicant.Internship["Start Date"]}</p>
+                             <p><strong>&#8226; End Date: </strong> ${applicant.Internship["End Date"]}</p>
+                             <p> <strong>&#8226; Summary: </strong> ${applicant.Internship.Summary}</p>`;
+    rightColumn.appendChild(internshipList);
 
     const achievementsHeading = document.createElement("h3");
     achievementsHeading.textContent = "Achievements";
@@ -143,7 +155,10 @@ function displayApplicant() {
     const achievementsList = document.createElement("ul");
     applicant.achievements.Summary.forEach((achievement) => {
       const achievementItem = document.createElement("p");
-      achievementItem.textContent = achievement;
+      const bulletPoint = document.createElement("span");
+      bulletPoint.innerHTML = "<strong>&#8226; </strong>";
+      achievementItem.appendChild(bulletPoint);
+      achievementItem.appendChild(document.createTextNode(achievement));
       achievementsList.appendChild(achievementItem);
     });
     rightColumn.appendChild(achievementsList);
@@ -173,7 +188,9 @@ function checkNavigationButtons() {
 }
 
 function filterApplicants(job) {
-  return applicants.filter((applicant) => applicant.basics.AppliedFor.toLowerCase() === job);
+  return applicants.filter(
+    (applicant) => applicant.basics.AppliedFor.toLowerCase() === job
+  );
 }
 
 prevButton.addEventListener("click", () => {
@@ -196,25 +213,23 @@ searchInput.addEventListener("keyup", (event) => {
   if (event.key === "Enter") {
     const jobToSearch = searchInput.value;
     if (jobToSearch.trim() === "") {
-      errorMessage.textContent =
-        "No such results found";
+      errorMessage.textContent = "No such results found";
       resumeContent.innerHTML = "";
-      err.classList.remove("visible")
+      err.classList.remove("visible");
       return;
     }
 
     filteredApplicants = filterApplicants(jobToSearch);
     if (filteredApplicants.length === 0) {
-      errorMessage.textContent =
-        "No such results found";
+      errorMessage.textContent = "No such results found";
       resumeContent.innerHTML = "";
-      err.classList.remove("visible")
+      err.classList.remove("visible");
     } else {
       currentApplicantIndex = 0;
       displayApplicant();
       checkNavigationButtons();
       errorMessage.textContent = "";
-      err.classList.add("visible")
+      err.classList.add("visible");
     }
   }
 });
